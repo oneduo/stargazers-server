@@ -18,6 +18,9 @@ processes = []
   LOG_STDERR_FORMATTER = "Monolog\\Formatter\\JsonFormatter"
   LIGHTHOUSE_QUEUE_BROADCASTS = false
   LIGHTHOUSE_SUBSCRIPTION_STORAGE_TTL = 3600
+  QUEUE_CONNECTION = "redis"
+  CACHE_DRIVER = "redis"
+
 
 [experimental]
   allowed_public_ports = []
@@ -25,7 +28,7 @@ processes = []
 
 [processes]
   app = ""
-  horizon = "php artisan horizon:start"
+  horizon = "php artisan queue:work"
 
 [[services]]
   http_checks = []

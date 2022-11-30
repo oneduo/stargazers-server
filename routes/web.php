@@ -13,15 +13,3 @@ use Nuwave\Lighthouse\Execution\Utils\Subscription;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    ray()->clearAll()->showQueries();
-    /** @var \App\Models\Stargazer $stargazer */
-    $stargazer = \App\Models\Stargazer::query()->with('packages')->find(473855293080872);
-
-    $package = $stargazer->packages->first();
-
-    Subscription::broadcast('packageUpdated', $package);
-
-    return dd('done');
-});
