@@ -10,25 +10,10 @@ processes = []
     NODE_VERSION = "14"
     PHP_VERSION = "8.1"
 
-[env]
-  APP_ENV = "production"
-  APP_URL = "https://stargazers.popowicz.fr"
-  LOG_CHANNEL = "stderr"
-  LOG_LEVEL = "info"
-  LOG_STDERR_FORMATTER = "Monolog\\Formatter\\JsonFormatter"
-  LIGHTHOUSE_QUEUE_BROADCASTS = false
-  LIGHTHOUSE_SUBSCRIPTION_STORAGE_TTL = 3600
-  QUEUE_CONNECTION = "redis"
-  CACHE_DRIVER = "redis"
-
 
 [experimental]
   allowed_public_ports = []
   auto_rollback = true
-
-[processes]
-  app = ""
-  horizon = "php artisan queue:work"
 
 [[services]]
   http_checks = []
