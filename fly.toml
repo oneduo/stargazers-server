@@ -1,0 +1,54 @@
+# fly.toml file generated for stargazers on 2022-11-29T21:27:17+01:00
+
+app = "stargazers"
+kill_signal = "SIGINT"
+kill_timeout = 5
+processes = []
+
+[build]
+  [build.args]
+    NODE_VERSION = "14"
+    PHP_VERSION = "8.1"
+
+[env]
+  APP_ENV = "production"
+  APP_URL = "https://stargazers.popowicz.fr"
+  LOG_CHANNEL = "stderr"
+  LOG_LEVEL = "info"
+  LOG_STDERR_FORMATTER = "Monolog\\Formatter\\JsonFormatter"
+  LIGHTHOUSE_QUEUE_BROADCASTS = false
+  LIGHTHOUSE_SUBSCRIPTION_STORAGE_TTL = 3600
+
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = true
+
+[processes]
+  app = ""
+  horizon = "php artisan horizon:start"
+
+[[services]]
+  http_checks = []
+  internal_port = 8080
+  processes = ["app"]
+  protocol = "tcp"
+  script_checks = []
+  [services.concurrency]
+    hard_limit = 25
+    soft_limit = 20
+    type = "connections"
+
+  [[services.ports]]
+    force_https = true
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
+  [[services.tcp_checks]]
+    grace_period = "1s"
+    interval = "15s"
+    restart_limit = 0
+    timeout = "2s"
