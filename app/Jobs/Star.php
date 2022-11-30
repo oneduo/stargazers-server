@@ -61,6 +61,6 @@ class Star implements ShouldQueue, ShouldBeEncrypted
                 });
             });
 
-
+        // TODO dispatch end event
     }
 }
