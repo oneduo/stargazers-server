@@ -52,7 +52,7 @@ class Star implements ShouldQueue, ShouldBeEncrypted
                     }
 
                     if ($response->successful()) {
-//                        $package->pivot->update(['starred_at' => now()]);
+                        $package->pivot->update(['starred_at' => now()]);
                     }
 
                     Subscription::broadcast('packageUpdated', $package);
