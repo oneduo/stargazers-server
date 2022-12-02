@@ -1,28 +1,25 @@
 #import scalar.graphql
 
 type PackageStargazer {
-    starred_at: DateTime
+  starred_at: DateTime
 }
 
 type Package {
-    id: ID!
-    name: String!
-    url: String!
-    pivot: PackageStargazer
+  id: ID!
+  name: String!
+  url: String!
+  pivot: PackageStargazer
 }
 
 type Mutation {
-    upload(upload: Upload): [Package!]
-    star(
-        stargazer: ID!
-        packages: [ID!]
-    ): String!
+  upload(upload: Upload): [Package!]
+  star(packages: [ID!]): String!
 }
 
 type Query {
-    packages(stargazer: ID!): [Package!]
+  packages(stargazer: ID!): [Package!]
 }
 
 type Subscription {
-    packageUpdated(stargazer: ID): Package
+  packageUpdated(stargazer: ID): Package
 }

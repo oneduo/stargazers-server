@@ -7,6 +7,7 @@ namespace App\GraphQL\Mutations;
 use App\Models\Stargazer;
 use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
+use Nuwave\Lighthouse\Exceptions\ValidationException;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
 class Star
@@ -16,9 +17,18 @@ class Star
      */
     public function __invoke($_, array $args, GraphQLContext $context)
     {
+        if (!$id = $context->request()->cookie(config('app.cookie_name'))) {
+            throw ValidationException::withMessages([
+                'stargazers_process_id' => 'Unknown process',
+            ]);
+        };
+
+
         /** @var \App\Models\Stargazer $stargazer */
-        if (! $stargazer = Stargazer::query()->find($args['stargazer'])) {
-            throw new \Exception('Invalid request');
+        if (!$stargazer = Stargazer::query()->find($id)) {
+            throw ValidationException::withMessages([
+                'stargazers_process_id' => 'Unknown session',
+            ]);
         }
 
         return DB::transaction(function () use ($stargazer, $args) {
