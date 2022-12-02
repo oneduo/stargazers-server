@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Str;
 
 /**
  * @property string $name
@@ -14,7 +15,7 @@ use Illuminate\Support\Str;
  * @property string $slug
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property \App\Models\PackageStargazer $pivot
+ * @property \App\Models\PackageSession $pivot
  */
 class Package extends Model
 {
@@ -25,15 +26,15 @@ class Package extends Model
         'url',
     ];
 
-    public function stargazers(): BelongsToMany
+    public function sessions(): BelongsToMany
     {
-        return $this->belongsToMany(Stargazer::class)
-            ->using(PackageStargazer::class)
-            ->withPivot(['starred_at']);
+        return $this->belongsToMany(Session::class)
+            ->using(PackageSession::class)
+            ->withPivot(['starred_at', 'status']);
     }
 
     public function slug(): Attribute
     {
-        return Attribute::get(fn () => Str::of($this->url)->after('https://github.com/'));
+        return Attribute::get(fn() => str($this->url)->after('https://github.com/')->toString());
     }
 }

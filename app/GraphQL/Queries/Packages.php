@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\GraphQL\Queries;
 
-use App\Models\Stargazer;
+use App\Jobs\Star;
+use App\Models\Session;
 use Illuminate\Support\Collection;
 use Nuwave\Lighthouse\Exceptions\ValidationException;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
@@ -16,20 +17,24 @@ class Packages
      */
     public function __invoke($_, array $args, GraphQLContext $context): Collection
     {
-        if (! $id = $context->request()->cookie(config('app.cookie_name'))) {
+        $id = $context->request()->cookie(config('app.cookie_name')) ?? data_get($args, 'session');
+
+        if (!$id) {
             throw ValidationException::withMessages([
-                'stargazers_process_id' => 'Unknown process',
+                'session' => 'Unknown process',
             ]);
         }
 
-        /** @var \App\Models\Stargazer $stargazer */
-        if (! $stargazer = Stargazer::query()->find($id)) {
+        /** @var \App\Models\Session $session */
+        if (!$session = Session::query()->find($id)) {
             throw ValidationException::withMessages([
-                'stargazers_process_id' => 'Unknown session',
+                'session' => 'Unknown session',
             ]);
         }
 
-        return $stargazer->packages()
+
+
+        return $session->packages()
             ->orderBy('name')
             ->get();
     }

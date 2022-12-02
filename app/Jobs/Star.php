@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Events\PackageUpdatedEvent;
-use App\Events\Processed;
+use App\Events\SessionFinished;
 use App\Models\Package;
-use App\Models\Stargazer;
+use App\Models\Session;
+use Illuminate\Bus\Batch;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Http\Client\Pool;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Bus;
 
 class Star implements ShouldQueue, ShouldBeEncrypted
 {
@@ -25,53 +24,35 @@ class Star implements ShouldQueue, ShouldBeEncrypted
     use Queueable;
     use SerializesModels;
 
-    public function __construct(
-        public Stargazer $stargazer,
-        public string $token
-    ) {
+    public function __construct(public Session $session, public ?string $token = null)
+    {
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function handle(): void
     {
-        $this->stargazer
+        $jobs = [];
+
+        $this->session
             ->packages()
-            ->chunk(10, function (Collection $collection) {
-                $responses = Http::pool(function (Pool $pool) use ($collection) {
-                    return $collection
-                        ->map(function (Package $package) use ($pool) {
-                            if ($package->pivot?->starred_at !== null) {
-                                return null;
-                            }
-
-                            return $pool->as($package->getKey())
-                                ->withHeaders([
-                                    'Accept' => 'application/vnd.github+json',
-                                    'Authorization' => "Bearer {$this->token}",
-                                    'Content-Length' => 0,
-                                ])
-                                ->put("https://api.github.com/user/starred/$package->slug");
-                        })
-                        ->filter();
-                });
-
-                $collection->each(function (Package $package) use ($responses) {
-                    /** @var \Illuminate\Http\Client\Response $response */
-                    if (! $response = $responses[$package->getKey()] ?? null) {
-                        event(new PackageUpdatedEvent($this->stargazer, $package, $package->pivot));
-
-                        return true;
-                    }
-
-                    if ($response->successful()) {
-                        $package->pivot->update(['starred_at' => now()]);
-                    }
-
-                    event(new PackageUpdatedEvent($this->stargazer, $package, $package->pivot));
-
-                    return true;
+            ->orderBy('name')
+            ->chunk(config('app.package_chunk_size', 100), function (Collection $collection) use (&$jobs) {
+                $collection->each(function (Package $package) use (&$jobs) {
+                    $jobs[] = new StarPackage($this->session, $package, $this->token);
                 });
             });
 
-        event(new Processed($this->stargazer));
+        $session = $this->session;
+
+        Bus::batch($jobs)
+            ->name("Starring {$this->session->name}")
+            ->finally(function (Batch $batch) use ($session) {
+                if ($batch->finished()) {
+//                    event(new SessionFinished($session));
+                }
+            })
+            ->dispatch();
     }
 }

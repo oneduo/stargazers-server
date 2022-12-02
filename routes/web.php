@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,14 +11,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('test', function () {
-    \Illuminate\Support\Facades\DB::transaction(function () {
-        $s = \App\Models\Stargazer::query()->whereHas('packages')->with('packages')->first();
+use Illuminate\Support\Facades\Route;
 
-        /** @var \App\Models\Package $p */
-        $p = $s->packages->first();
-
-        $p->pivot->update(['starred_at' => now()]);
-        dd($p->pivot->toArray());
-    });
+Route::get('/test', function () {
+    dd(\App\Models\Session::first()->token);
 });

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\GraphQL\Mutations;
 
 use App\Models\Package;
-use App\Models\Stargazer;
+use App\Models\Session;
 use App\Support\PackageHandler;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +20,7 @@ class Upload
     public function __invoke($_, array $args, GraphQLContext $context)
     {
         return DB::transaction(function () use ($args) {
-            $stargazer = Stargazer::query()->create([
+            $session = Session::query()->create([
                 'id' => app(Snowflake::class)->short(),
             ]);
 
@@ -36,7 +36,7 @@ class Upload
 
             $cookie = cookie()->make(
                 name: config('app.cookie_name'),
-                value: $stargazer->getKey(),
+                value: $session->getKey(),
                 minutes: 0,
                 path: '/',
                 domain: '.'.parse_url(config('app.front_url'), PHP_URL_HOST),

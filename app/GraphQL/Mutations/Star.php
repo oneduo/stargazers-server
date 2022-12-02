@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\GraphQL\Mutations;
 
-use App\Models\Stargazer;
+use App\Models\PackageSession;
+use App\Models\Session;
 use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
 use Nuwave\Lighthouse\Exceptions\ValidationException;
@@ -17,26 +18,32 @@ class Star
      */
     public function __invoke($_, array $args, GraphQLContext $context)
     {
-        if (! $id = $context->request()->cookie(config('app.cookie_name'))) {
+        if (!$id = $context->request()->cookie(config('app.cookie_name'))) {
             throw ValidationException::withMessages([
-                'stargazers_process_id' => 'Unknown process',
+                'session' => 'Unknown process',
             ]);
         }
 
-        /** @var \App\Models\Stargazer $stargazer */
-        if (! $stargazer = Stargazer::query()->find($id)) {
+        /** @var \App\Models\Session $session */
+        if (!$session = Session::query()->find($id)) {
             throw ValidationException::withMessages([
-                'stargazers_process_id' => 'Unknown session',
+                'session' => 'Unknown session',
             ]);
         }
 
-        return DB::transaction(function () use ($stargazer, $args) {
-            $stargazer->packages()->sync($args['packages']);
+        return DB::transaction(function () use ($session, $args) {
+            $insert = collect(data_get($args, 'packages'))
+                ->map(fn(int $id) => [
+                    'package_id' => $id,
+                    'session_id' => $session->getKey(),
+                ]);
+
+            PackageSession::query()->insert($insert->toArray());
 
             return Socialite::driver('github')
                 ->scopes(['read:user', 'public_repo'])
                 ->stateless()
-                ->with(['state' => $stargazer->getKey()])
+                ->with(['state' => $session->getKey()])
                 ->redirect()
                 ->getTargetUrl();
         });

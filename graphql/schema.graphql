@@ -1,14 +1,15 @@
 #import scalar.graphql
 
-type PackageStargazer {
+type PackageSession {
   starred_at: DateTime
+  status: Status!
 }
 
 type Package {
   id: ID!
   name: String!
   url: String!
-  pivot: PackageStargazer
+  pivot: PackageSession
 }
 
 type Mutation {
@@ -17,9 +18,5 @@ type Mutation {
 }
 
 type Query {
-  packages: [Package!]
-}
-
-type Subscription {
-  packageUpdated(stargazer: ID): Package
+  packages(session: ID): [Package!]
 }

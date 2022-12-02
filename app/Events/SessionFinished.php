@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace App\Events;
 
-use App\Models\Stargazer;
+use App\Models\Session;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class Processed implements ShouldBroadcast
+class SessionFinished implements ShouldBroadcast
 {
     use Dispatchable;
     use InteractsWithSockets;
     use SerializesModels;
 
-    public function __construct(public Stargazer $stargazer)
+    public function __construct(public Session $session)
     {
     }
 
@@ -28,11 +28,16 @@ class Processed implements ShouldBroadcast
 
     public function broadcastAs(): string
     {
-        return 'package.processed';
+        return 'session.finished';
     }
 
     public function broadcastOn(): Channel
     {
-        return new Channel('session.'.$this->stargazer->id);
+        return new Channel('session.' . $this->session->getKey());
+    }
+
+    public function broadcastQueue(): string
+    {
+        return 'pusher';
     }
 }
