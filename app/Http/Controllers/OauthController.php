@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Jobs\Star;
@@ -26,6 +28,6 @@ class OauthController
 
         Star::dispatch($stargazer, $user->token);
 
-        return redirect(config('app.front_url'));
+        return redirect(config('app.front_url').'/star/'.$stargazer->getKey());
     }
 }

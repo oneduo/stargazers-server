@@ -6,7 +6,7 @@ namespace App\GraphQL\Mutations;
 
 use App\Models\Package;
 use App\Models\Stargazer;
-use App\Support\Composer;
+use App\Support\PackageHandler;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use Kra8\Snowflake\Snowflake;
@@ -27,7 +27,7 @@ class Upload
             /** @var \Illuminate\Http\UploadedFile $file */
             $file = $args['upload'];
 
-            $packages = Composer::make(json: $file->get())->packages();
+            $packages = PackageHandler::make($file)->handle();
 
             Package::query()->upsert(
                 values: $packages->toArray(),
@@ -39,7 +39,7 @@ class Upload
                 value: $stargazer->getKey(),
                 minutes: 0,
                 path: '/',
-                domain: '.' . parse_url(config('app.front_url'), PHP_URL_HOST),
+                domain: '.'.parse_url(config('app.front_url'), PHP_URL_HOST),
             );
 
             Cookie::queue($cookie);

@@ -17,15 +17,14 @@ class Star
      */
     public function __invoke($_, array $args, GraphQLContext $context)
     {
-        if (!$id = $context->request()->cookie(config('app.cookie_name'))) {
+        if (! $id = $context->request()->cookie(config('app.cookie_name'))) {
             throw ValidationException::withMessages([
                 'stargazers_process_id' => 'Unknown process',
             ]);
-        };
-
+        }
 
         /** @var \App\Models\Stargazer $stargazer */
-        if (!$stargazer = Stargazer::query()->find($id)) {
+        if (! $stargazer = Stargazer::query()->find($id)) {
             throw ValidationException::withMessages([
                 'stargazers_process_id' => 'Unknown session',
             ]);

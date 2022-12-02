@@ -17,7 +17,7 @@ type Mutation {
 }
 
 type Query {
-  packages(stargazer: ID!): [Package!]
+  packages: [Package!]
 }
 
 type Subscription {

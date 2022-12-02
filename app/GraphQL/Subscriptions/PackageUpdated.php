@@ -3,30 +3,29 @@
 namespace App\GraphQL\Subscriptions;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Nuwave\Lighthouse\Schema\Types\GraphQLSubscription;
 use Nuwave\Lighthouse\Subscriptions\Subscriber;
 
-final class PackageUpdated extends GraphQLSubscription
+class PackageUpdated extends GraphQLSubscription
 {
     public function authorize(Subscriber $subscriber, Request $request): bool
     {
-        return (int)$request->input('state') === (int)$subscriber->args['stargazer'];
+        throw new \Exception('try to authorize subscription');
     }
 
     public function filter(Subscriber $subscriber, $root): bool
     {
-        return (int)$subscriber->args['stargazer'] === (int)$root->pivot?->stargazer_id;
+        $stargazer = $subscriber->context->request()->cookie(config('app.cookie_name'));
+
+        return (int) $stargazer === (int) $root->pivot?->stargazer_id;
     }
 
     public function encodeTopic(Subscriber $subscriber, string $fieldName): string
     {
-        return Str::snake($fieldName).':'.$subscriber->args['stargazer'];
+        return str($fieldName)->snake().':'.$subscriber->args['stargazer'];
     }
 
     /**
-     * Decode topic name.
-     *
      * @param  string  $fieldName
      * @param  \App\Models\Package  $root
      * @return string
@@ -35,6 +34,6 @@ final class PackageUpdated extends GraphQLSubscription
     {
         $stargazer_id = $root->pivot?->stargazer_id;
 
-        return Str::snake($fieldName).':'.$stargazer_id;
+        return str($fieldName)->snake().':'.$stargazer_id;
     }
 }

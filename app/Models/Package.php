@@ -14,7 +14,6 @@ use Illuminate\Support\Str;
  * @property string $slug
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- *
  * @property \App\Models\PackageStargazer $pivot
  */
 class Package extends Model
@@ -35,6 +34,6 @@ class Package extends Model
 
     public function slug(): Attribute
     {
-        return Attribute::get(fn() => Str::of($this->url)->after('https://github.com/'));
+        return Attribute::get(fn () => Str::of($this->url)->after('https://github.com/'));
     }
 }
