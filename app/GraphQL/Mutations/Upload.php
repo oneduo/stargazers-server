@@ -37,8 +37,6 @@ class Upload
                 name: config('app.cookie_name'),
                 value: $session->getKey(),
                 minutes: 0,
-                path: '/',
-                domain: '.'.parse_url(config('app.front_url'), PHP_URL_HOST),
             );
 
             Cookie::queue($cookie);

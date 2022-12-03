@@ -56,7 +56,7 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
-    'front_url' => env('APP_FRONT_URL'),
+    'front_url' => env('APP_FRONT_URL', 'https://stargazer.app'),
 
     'asset_url' => env('ASSET_URL'),
 
