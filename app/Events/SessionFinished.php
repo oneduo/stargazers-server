@@ -33,7 +33,7 @@ class SessionFinished implements ShouldBroadcast
 
     public function broadcastOn(): Channel
     {
-        return new Channel('session.' . $this->session->getKey());
+        return new Channel("session.{$this->session->getKey()}");
     }
 
     public function broadcastQueue(): string

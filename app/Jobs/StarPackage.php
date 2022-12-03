@@ -68,6 +68,6 @@ class StarPackage implements ShouldQueue, ShouldBeUnique, ShouldBeEncrypted
 
     public function uniqueId(): string
     {
-        return 'job.sessions:' . $this->session->getKey() . '.package:' . $this->package->getKey();
+        return "job.sessions:{$this->session->getKey()}.package:{$this->package->getKey()}";
     }
 }

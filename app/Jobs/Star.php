@@ -47,10 +47,10 @@ class Star implements ShouldQueue, ShouldBeEncrypted
         $session = $this->session;
 
         Bus::batch($jobs)
-            ->name("Starring {$this->session->name}")
+            ->name("Starring {$this->session->getKey()}")
             ->finally(function (Batch $batch) use ($session) {
                 if ($batch->finished()) {
-//                    event(new SessionFinished($session));
+                    event(new SessionFinished($session));
                 }
             })
             ->dispatch();

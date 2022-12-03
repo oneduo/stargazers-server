@@ -6,13 +6,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property int $id
- * @property int $github_id
- * @property boolean $done
- * @property ?string $token
+ * @property ?int $stargazer_id
+ * @property-read ?\App\Models\Stargazer $stargazer
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
  */
 class Session extends Model
 {
@@ -22,14 +24,13 @@ class Session extends Model
 
     protected $fillable = [
         'id',
-        'github_id',
-        'done',
-        'token',
+        'stargazer_id',
     ];
 
-    protected $casts = [
-        'token' => 'encrypted',
-    ];
+    public function stargazer(): BelongsTo
+    {
+        return $this->belongsTo(Stargazer::class);
+    }
 
     public function packages(): BelongsToMany
     {

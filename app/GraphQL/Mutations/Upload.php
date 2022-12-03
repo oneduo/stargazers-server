@@ -15,7 +15,6 @@ use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 class Upload
 {
     /**
-     * @throws \JsonException
      */
     public function __invoke($_, array $args, GraphQLContext $context)
     {

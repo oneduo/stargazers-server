@@ -6,7 +6,9 @@ namespace App\Http\Controllers;
 
 use App\Jobs\Star;
 use App\Models\Session;
+use App\Models\Stargazer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
 
 class OauthController
@@ -20,14 +22,23 @@ class OauthController
             return redirect(config('app.front_url'));
         }
 
-        $user = Socialite::driver('github')->stateless()->user();
+        return DB::transaction(function () use ($session) {
+            $user = Socialite::driver('github')->stateless()->user();
 
-        $session->update([
-            'github_id' => $user->id,
-        ]);
+            /** @var \App\Models\Stargazer $stargazer */
+            $stargazer = Stargazer::query()->updateOrCreate([
+                'github_id' => $user->id,
+            ], [
+                'username' => $user->nickname,
+            ]);
 
-        Star::dispatch($session, $user->token);
+            $session->update([
+                'stargazer_id' => $stargazer->getKey(),
+            ]);
 
-        return redirect(config('app.front_url').'/star/'.$session->getKey());
+            Star::dispatch($session, $user->token);
+
+            return redirect(config('app.front_url').'/star/'.$session->getKey());
+        });
     }
 }
