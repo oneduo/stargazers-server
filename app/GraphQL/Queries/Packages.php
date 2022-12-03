@@ -32,8 +32,6 @@ class Packages
             ]);
         }
 
-
-
         return $session->packages()
             ->orderBy('name')
             ->get();
