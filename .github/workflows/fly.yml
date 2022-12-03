@@ -10,13 +10,11 @@ jobs:
     name: Deploy app
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy main
-        uses: superfly/flyctl-actions/setup-flyctl@master
         run: flyctl deploy --remote-only
 
       - name: Deploy worker
-        uses: superfly/flyctl-actions/setup-flyctl@master
         run: flyctl deploy -c horizon.toml --remote-only
