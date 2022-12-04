@@ -12,6 +12,6 @@ class OgController extends Controller
 {
     public function __invoke(string $id): JsonResponse
     {
-        return response()->json(Cache::rememberForever("og.session.{$id}", fn() => Session::query()->with(['stargazer:username', 'packages'])->find($id)));
+        return response()->json(Cache::rememberForever("og.session.{$id}", fn() => Session::query()->with(['stargazer', 'packages'])->find($id)));
     }
 }
