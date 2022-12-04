@@ -37,6 +37,7 @@ class StarPackage implements ShouldQueue, ShouldBeUnique, ShouldBeEncrypted
             return;
         }
 
+        ray($this->token);
         /** @var PackageSession $pivot */
         $pivot = PackageSession::query()
             ->whereBelongsTo($this->package)

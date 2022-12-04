@@ -13,4 +13,5 @@ enum PackageType: string implements ShouldRegisterInGraphQL
 
     case PHP = 'php';
     case NPM = 'npm';
+    case OTHER = 'other';
 }
