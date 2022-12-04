@@ -24,13 +24,13 @@ class Upload
             ]);
 
             /** @var \Illuminate\Http\UploadedFile $file */
-            $file = $args['upload'];
+            $file = data_get($args, 'upload');
 
             $packages = PackageHandler::make($file)->handle();
 
             Package::query()->upsert(
                 values: $packages->toArray(),
-                uniqueBy: ['name', 'url'],
+                uniqueBy: ['name'],
             );
 
             $cookie = cookie()->make(

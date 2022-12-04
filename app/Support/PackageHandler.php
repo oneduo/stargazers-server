@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Support;
 
 use App\Support\Guessers\ComposerGuesser;
+use App\Support\Guessers\NpmGuesser;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Nuwave\Lighthouse\Exceptions\ValidationException;
@@ -13,6 +14,7 @@ class PackageHandler
 {
     public array $guessers = [
         ComposerGuesser::class,
+        NpmGuesser::class,
     ];
 
     public function __construct(public UploadedFile $file)

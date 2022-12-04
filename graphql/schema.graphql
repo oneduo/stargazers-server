@@ -30,7 +30,7 @@ type Statistics {
 }
 
 type Mutation {
-  upload(upload: Upload): [Package!]
+  upload(upload: Upload @rules(apply: ["required", "file", "max:10240", "mimes:json"])): [Package!]
   star(packages: [ID!]): String!
 }
 

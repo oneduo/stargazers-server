@@ -47,6 +47,10 @@ class StarPackage implements ShouldQueue, ShouldBeUnique, ShouldBeEncrypted
             return;
         }
 
+        if (str($this->package->url)->startsWith('https://registry.npmjs.org/') && !$this->handleNpm()) {
+            return;
+        }
+
         $name = str($this->package->slug)->lower()->toString();
 
         $response = Http::withHeaders([
@@ -69,5 +73,25 @@ class StarPackage implements ShouldQueue, ShouldBeUnique, ShouldBeEncrypted
     public function uniqueId(): string
     {
         return "job.sessions:{$this->session->getKey()}.package:{$this->package->getKey()}";
+    }
+
+    public function handleNpm(): bool
+    {
+        $registry = Http::get($this->package->url);
+
+        $url = $registry->json('repository.url');
+
+        if (!$url) {
+            return false;
+        }
+
+        $this->package->update([
+            'url' => str($url)
+                ->replace('git+', '')
+                ->replace('.git', '')
+                ->toString(),
+        ]);
+
+        return true;
     }
 }

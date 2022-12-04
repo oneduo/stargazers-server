@@ -29,6 +29,7 @@ class Package extends Model
 
     protected $appends = [
         'image',
+        'slug',
     ];
 
     public function sessions(): BelongsToMany
@@ -40,11 +41,22 @@ class Package extends Model
 
     public function slug(): Attribute
     {
-        return Attribute::get(fn() => str($this->url)->after('https://github.com/')->toString());
+        return Attribute::get(function () {
+            return str(parse_url($this->url, PHP_URL_PATH))
+                ->ltrim('/')
+                ->replace('.git', '')
+                ->toString();
+        });
     }
 
     public function image(): Attribute
     {
-        return Attribute::get(fn() => str($this->slug)->before('/')->wrap('https://github.com/', '.png')->toString());
+        return Attribute::get(function () {
+            return str($this->slug)
+                ->before('/')
+                ->replace('@', '')
+                ->wrap('https://github.com/', '.png')
+                ->toString();
+        });
     }
 }
