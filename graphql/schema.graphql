@@ -9,6 +9,7 @@ type Package {
   id: ID!
   name: String!
   url: String!
+  image: String!
   pivot: PackageSession
 }
 

@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string $name
  * @property string $url
  * @property string $slug
+ * @property string $image
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \App\Models\PackageSession $pivot
@@ -36,5 +37,10 @@ class Package extends Model
     public function slug(): Attribute
     {
         return Attribute::get(fn() => str($this->url)->after('https://github.com/')->toString());
+    }
+
+    public function image(): Attribute
+    {
+        return Attribute::get(fn() => str($this->slug)->before('/')->wrap('https://github.com/', '.png')->toString());
     }
 }
