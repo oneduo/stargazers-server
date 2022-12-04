@@ -16,13 +16,14 @@ LABEL fly_launch_runtime="laravel"
 RUN apt-get update && apt-get install -y \
     git curl zip unzip rsync ca-certificates vim htop cron \
     php${PHP_VERSION}-pgsql php${PHP_VERSION}-bcmath \
-    php${PHP_VERSION}-swoole php${PHP_VERSION}-xml php${PHP_VERSION}-mbstring \
+    php${PHP_VERSION}-xml php${PHP_VERSION}-mbstring \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www/html
 # copy application code, skipping files based on .dockerignore
 COPY . /var/www/html
+COPY .fly/opcache.ini /etc/php/8.1/fpm/conf.d/10-opcache.ini
 
 RUN composer install --optimize-autoloader --no-dev \
     && mkdir -p storage/logs \
