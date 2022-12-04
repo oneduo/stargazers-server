@@ -18,6 +18,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('horizon:snapshot')->everyFiveMinutes();
+        $schedule->command('queue:prune-batches')->daily();
+        $schedule->command('queue:prune-failed')->daily();
     }
 
     /**
