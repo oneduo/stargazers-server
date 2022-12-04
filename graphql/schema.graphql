@@ -17,6 +17,7 @@ type Session {
   id: ID!
   packages: [Package!] @belongsToMany
   stargazer: Stargazer @belongsTo
+  processed_at: DateTime
 }
 
 type Stargazer {

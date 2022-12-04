@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property-read ?\App\Models\Stargazer $stargazer
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $processed_at
  */
 class Session extends Model
 {
@@ -25,6 +26,7 @@ class Session extends Model
     protected $fillable = [
         'id',
         'stargazer_id',
+        'processed_at',
     ];
 
     public function stargazer(): BelongsTo

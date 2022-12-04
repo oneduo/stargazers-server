@@ -50,6 +50,8 @@ class Star implements ShouldQueue, ShouldBeEncrypted
             ->name("Starring {$this->session->getKey()}")
             ->finally(function (Batch $batch) use ($session) {
                 if ($batch->finished()) {
+                    $session->update(['processed_at' => now()]);
+
                     event(new SessionFinished($session));
                 }
             })

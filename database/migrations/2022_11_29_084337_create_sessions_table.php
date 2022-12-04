@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('sessions', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
             $table->unsignedBigInteger('stargazer_id')->nullable();
+            $table->timestamp('processed_at')->nullable();
             $table->timestamps();
         });
 
