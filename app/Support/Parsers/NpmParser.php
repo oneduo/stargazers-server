@@ -11,7 +11,10 @@ class NpmParser extends Parser
 {
     public function parse(): Collection
     {
-        $require = collect(data_get($this->data, 'packages', []))->map(fn(array $package, string $key) => $key ? $this->map($key, $package) : null)->filter()->values();
+        $require = collect(data_get($this->data, 'packages', []))
+            ->map(fn(array $package, string $key) => $key ? $this->map($key, $package) : null)
+            ->filter()
+            ->values();
 
         return $require->sortBy('name');
     }

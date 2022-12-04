@@ -60,7 +60,6 @@ class StarPackage implements ShouldQueue, ShouldBeUnique, ShouldBeEncrypted
         ])
             ->put("https://api.github.com/user/starred/{$name}");
 
-
         $this->session->packages()
             ->updateExistingPivot($this->package->id, [
                 'status' => $response->successful() ? Status::DONE : Status::ERROR,

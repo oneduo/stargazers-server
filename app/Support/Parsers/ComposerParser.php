@@ -11,8 +11,8 @@ class ComposerParser extends Parser
 {
     public function parse(): Collection
     {
-        $require = collect(data_get($this->data, 'packages', []))->map(fn (array $packages) => $this->map($packages))->filter();
-        $requireDev = collect(data_get($this->data, 'packages-dev', []))->map(fn (array $packages) => $this->map($packages))->filter();
+        $require = collect(data_get($this->data, 'packages', []))->map(fn(array $packages) => $this->map($packages))->filter();
+        $requireDev = collect(data_get($this->data, 'packages-dev', []))->map(fn(array $packages) => $this->map($packages))->filter();
 
         return $require->merge($requireDev)->sortBy('name');
     }
