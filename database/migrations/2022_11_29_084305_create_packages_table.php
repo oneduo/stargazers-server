@@ -11,9 +11,12 @@ return new class extends Migration {
     {
         Schema::create('packages', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->string('name')->index();
             $table->string('url', 512);
+            $table->string('type')->index()->nullable();
             $table->timestamps();
+
+            $table->unique(['name', 'type']);
         });
     }
 

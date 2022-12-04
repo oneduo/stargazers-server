@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Support\Parsers;
 
+use App\Enums\PackageType;
 use Illuminate\Support\Collection;
 
 class ComposerParser extends Parser
@@ -27,6 +28,7 @@ class ComposerParser extends Parser
         return [
             'name' => data_get($package, 'name'),
             'url' => str($url)->before('.git')->toString(),
+            'type' => PackageType::PHP,
         ];
     }
 }

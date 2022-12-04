@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Support\Parsers;
 
+use App\Enums\PackageType;
 use Illuminate\Support\Collection;
 
 class NpmParser extends Parser
@@ -30,6 +31,7 @@ class NpmParser extends Parser
         return [
             'name' => $name,
             'url' => $url,
+            'type' => PackageType::NPM,
         ];
     }
 }
