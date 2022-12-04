@@ -217,4 +217,6 @@ return [
     ])->toArray(),
 
     'cookie_name' => env('APP_COOKIE_NAME', 'session'),
+
+    'vercel_token' => env('APP_VERCEL_TOKEN'),
 ];

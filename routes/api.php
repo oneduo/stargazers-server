@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\OauthController;
+use App\Http\Controllers\OgController;
+use App\Http\Middleware\AllowVercelEdge;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,3 +19,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('oauth/callback', OauthController::class)->name('oauth.callback');
+Route::get('session/{id}', OgController::class)->name('og.session')->middleware(AllowVercelEdge::class);

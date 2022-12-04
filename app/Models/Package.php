@@ -27,6 +27,10 @@ class Package extends Model
         'url',
     ];
 
+    protected $appends = [
+        'image',
+    ];
+
     public function sessions(): BelongsToMany
     {
         return $this->belongsToMany(Session::class)
