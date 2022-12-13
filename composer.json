@@ -10,6 +10,7 @@
   "require": {
     "php": "^8.0.2",
     "guzzlehttp/guzzle": "^7.2",
+    "inspector-apm/inspector-laravel": "^4.7",
     "kra8/laravel-snowflake": "^2.1",
     "laravel/framework": "^9.19",
     "laravel/horizon": "^5.10",
